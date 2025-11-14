@@ -297,28 +297,55 @@ cron.schedule('*/5 * * * *', async () => {
   console.log('\n⏰ Scheduled data fetch triggered...');
   try {
     const results = await electionScraper.fetchResults();
-    const changeInfo = compareResults(latestResults, results);
     
-    latestResults = results;
+    // Check if we got real data (not just fallback/pending data)
+    const hasRealData = results.states.some(s => 
+      s.name && 
+      !s.name.startsWith('Constituency ') && 
+      s.leadingParty && 
+      s.leadingParty !== 'Unknown' && 
+      (s.declared > 0 || s.leading > 0)
+    );
     
-    if (changeInfo.hasChanges) {
-      changeHistory.unshift({
-        timestamp: Date.now(),
-        changes: changeInfo.changes,
-        summary: results.summary,
-        isFirstUpdate: false
-      });
+    // Check if current data has real data
+    const currentHasRealData = latestResults.states.some(s => 
+      s.name && 
+      !s.name.startsWith('Constituency ') && 
+      s.leadingParty && 
+      s.leadingParty !== 'Unknown' && 
+      (s.declared > 0 || s.leading > 0)
+    );
+    
+    // Only update if:
+    // 1. We got real data, OR
+    // 2. Current data has no real data (first time or was overwritten with empty)
+    if (hasRealData || !currentHasRealData) {
+      const changeInfo = compareResults(latestResults, results);
       
-      if (changeHistory.length > 100) {
-        changeHistory = changeHistory.slice(0, 100);
+      latestResults = results;
+      
+      if (changeInfo.hasChanges) {
+        changeHistory.unshift({
+          timestamp: Date.now(),
+          changes: changeInfo.changes,
+          summary: results.summary,
+          isFirstUpdate: false
+        });
+        
+        if (changeHistory.length > 100) {
+          changeHistory = changeHistory.slice(0, 100);
+        }
+        
+        console.log(`✅ Scheduled update completed: ${results.states.length} constituencies, ${results.summary.declared} declared, ${results.summary.leading} leading`);
+      } else {
+        console.log(`✅ Scheduled update completed (no changes): ${results.states.length} constituencies`);
       }
-      
-      console.log(`✅ Scheduled update completed: ${results.states.length} constituencies, ${results.summary.declared} declared, ${results.summary.leading} leading`);
     } else {
-      console.log(`✅ Scheduled update completed (no changes): ${results.states.length} constituencies`);
+      console.log(`⚠️  Scheduled fetch returned empty/fallback data. Keeping existing data with ${latestResults.states.filter(s => s.leadingParty && s.leadingParty !== 'Unknown').length} real constituencies.`);
     }
   } catch (error) {
     console.error('❌ Error in scheduled fetch:', error.message);
+    console.log(`⚠️  Keeping existing data due to error.`);
   }
 }, {
   scheduled: true,
