@@ -218,23 +218,85 @@
 }
 
 @media (max-width: 768px) {
+  .table-header-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .table-title {
+    font-size: 1.25rem;
+  }
+
+  .table-stats {
+    font-size: 0.85rem;
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -1rem;
+    padding: 0 1rem;
+  }
+
   .state-table {
     font-size: 0.85rem;
+    min-width: 600px; /* Force horizontal scroll on small screens */
   }
 
   .state-table th,
   .state-table td {
     padding: 0.75rem 0.5rem;
+    white-space: nowrap;
+  }
+
+  .state-table th:first-child,
+  .state-table td:first-child {
+    position: sticky;
+    left: 0;
+    background: white;
+    z-index: 1;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .state-table thead th:first-child {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   }
 
   .progress-container {
     flex-direction: column;
     gap: 0.25rem;
     align-items: flex-start;
+    min-width: 100px;
   }
 
   .progress-text {
     text-align: left;
+    min-width: unset;
+  }
+}
+
+@media (max-width: 480px) {
+  .table-title {
+    font-size: 1.1rem;
+  }
+
+  .state-table {
+    font-size: 0.8rem;
+    min-width: 550px;
+  }
+
+  .state-table th,
+  .state-table td {
+    padding: 0.5rem 0.4rem;
+  }
+
+  .search-filters-row {
+    gap: 0.75rem;
+  }
+
+  .constituency-search-filter {
+    padding: 0.75rem 1rem;
   }
 }
 

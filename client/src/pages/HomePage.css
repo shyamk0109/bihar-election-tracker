@@ -23,6 +23,19 @@
   
   .home-chart-section {
     padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-container {
+    padding: 0.75rem;
+  }
+  
+  .home-chart-section {
+    padding: 0.75rem;
+    margin-bottom: 1rem;
   }
 }
 

@@ -109,10 +109,49 @@
 
 @media (max-width: 768px) {
   .change-notification {
+    top: 80px;
     right: 10px;
     left: 10px;
     min-width: unset;
     max-width: unset;
+    padding: 1rem;
+    transform: translateY(-100px);
+  }
+
+  .change-notification.show {
+    transform: translateY(0);
+  }
+
+  .notification-title {
+    font-size: 0.9rem;
+  }
+
+  .notification-content {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .change-notification {
+    top: 70px;
+    padding: 0.75rem;
+  }
+
+  .notification-icon {
+    font-size: 1.25rem;
+  }
+
+  .notification-title {
+    font-size: 0.85rem;
+  }
+
+  .notification-content {
+    font-size: 0.85rem;
+  }
+
+  .notification-close {
+    width: 28px;
+    height: 28px;
   }
 }
 

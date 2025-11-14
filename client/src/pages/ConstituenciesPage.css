@@ -14,3 +14,9 @@
   }
 }
 
+@media (max-width: 480px) {
+  .constituencies-container {
+    padding: 0.75rem;
+  }
+}
+

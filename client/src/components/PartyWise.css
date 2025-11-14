@@ -7,6 +7,80 @@
   margin-top: 2rem;
 }
 
+@media (max-width: 768px) {
+  .party-wise-container {
+    padding: 1.5rem;
+    margin-top: 1rem;
+    border-radius: 12px;
+  }
+
+  .party-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .party-summary-cards {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .party-summary-card {
+    padding: 1.25rem;
+  }
+
+  .card-value {
+    font-size: 1.75rem;
+  }
+
+  .party-charts-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .party-chart-card {
+    padding: 1rem;
+    min-height: 300px;
+  }
+
+  .party-chart-card h3 {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .party-chart-card > div {
+    min-height: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .party-wise-container {
+    padding: 1rem;
+  }
+
+  .party-title {
+    font-size: 1.25rem;
+  }
+
+  .party-summary-card {
+    padding: 1rem;
+  }
+
+  .card-value {
+    font-size: 1.5rem;
+  }
+
+  .party-chart-card {
+    min-height: 250px;
+    padding: 0.75rem;
+  }
+
+  .party-chart-card > div {
+    min-height: 200px;
+  }
+}
+
 .party-title {
   font-size: 1.8rem;
   font-weight: 700;

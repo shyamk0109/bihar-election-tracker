@@ -48,12 +48,40 @@
 }
 
 @media (max-width: 768px) {
+  .charts-grid {
+    gap: 1.5rem;
+  }
+
   .chart-title {
     font-size: 1.25rem;
+    margin-bottom: 1rem;
   }
 
   .chart-subtitle {
     font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .chart-item {
+    min-height: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .charts-grid {
+    gap: 1rem;
+  }
+
+  .chart-title {
+    font-size: 1.1rem;
+  }
+
+  .chart-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .chart-item {
+    min-height: 200px;
   }
 }
 

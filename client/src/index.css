@@ -13,6 +13,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
+  /* Prevent horizontal scroll on mobile */
+  overflow-x: hidden;
+}
+
+/* Improve touch targets on mobile */
+@media (max-width: 768px) {
+  button, a, input, select {
+    min-height: 44px; /* Apple's recommended touch target size */
+  }
 }
 
 code {

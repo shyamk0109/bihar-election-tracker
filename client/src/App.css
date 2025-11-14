@@ -70,12 +70,51 @@
 }
 
 @media (max-width: 768px) {
+  .App {
+    padding-bottom: 1rem;
+  }
+
+  .error-container h2 {
+    font-size: 1.5rem;
+  }
+
+  .error-container p {
+    font-size: 1rem;
+  }
+
   .error-banner {
     left: 10px;
     right: 10px;
     transform: none;
     font-size: 0.9rem;
     padding: 10px 16px;
+    bottom: 10px;
+  }
+
+  .retry-button {
+    padding: 12px 20px;
+    font-size: 0.95rem;
+    width: 100%;
+    max-width: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .error-container {
+    padding: 1.5rem;
+  }
+
+  .error-container h2 {
+    font-size: 1.25rem;
+  }
+
+  .error-container p {
+    font-size: 0.9rem;
+  }
+
+  .error-banner {
+    font-size: 0.85rem;
+    padding: 8px 12px;
   }
 }
 
