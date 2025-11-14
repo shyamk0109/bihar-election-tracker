@@ -10,7 +10,8 @@
     "build": "cd client && npm run build",
     "install-all": "npm install && cd client && npm install",
     "start": "node server/index.js",
-    "postinstall": "cd client && npm install"
+    "postinstall": "cd client && npm install",
+    "pusher": "node local-data-pusher.js"
   },
   "keywords": ["election", "tracking", "dashboard", "analytics"],
   "author": "",

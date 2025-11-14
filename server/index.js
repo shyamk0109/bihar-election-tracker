@@ -191,6 +191,53 @@ app.get('/api/refresh-history', (req, res) => {
   }
 });
 
+// API endpoint to receive data from local service
+app.post('/api/push-data', express.json({ limit: '10mb' }), (req, res) => {
+  try {
+    const data = req.body;
+    
+    // Validate data structure
+    if (!data.states || !Array.isArray(data.states)) {
+      return res.status(400).json({ error: 'Invalid data format. Expected { states: [], summary: {} }' });
+    }
+    
+    // Update latest results
+    latestResults = {
+      timestamp: data.timestamp || Date.now(),
+      states: data.states,
+      summary: data.summary || {}
+    };
+    
+    // Track changes
+    const changeInfo = compareResults({}, latestResults);
+    if (changeInfo.hasChanges) {
+      changeHistory.unshift({
+        timestamp: Date.now(),
+        changes: changeInfo.changes,
+        summary: latestResults.summary,
+        isFirstUpdate: changeHistory.length === 0
+      });
+      
+      // Keep only last 100 updates
+      if (changeHistory.length > 100) {
+        changeHistory = changeHistory.slice(0, 100);
+      }
+    }
+    
+    console.log(`✅ Received data push: ${data.states.length} constituencies, ${data.summary?.declared || 0} declared, ${data.summary?.leading || 0} leading`);
+    
+    res.json({ 
+      success: true, 
+      message: 'Data received successfully',
+      constituenciesCount: data.states.length,
+      timestamp: latestResults.timestamp
+    });
+  } catch (error) {
+    console.error('Error receiving data push:', error);
+    res.status(500).json({ error: 'Failed to process data push', message: error.message });
+  }
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ 
