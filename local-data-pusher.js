@@ -38,7 +38,7 @@ async function fetchPage(url) {
 /**
  * Extracts text from a cell, removing nested tables
  */
-function getCellText(cell) {
+function getCellText(cell, $) {
   const $cell = $(cell);
   const $clone = $cell.clone();
   $clone.find('table, .tooltip, .tooltip-icon').remove();
@@ -48,14 +48,14 @@ function getCellText(cell) {
 /**
  * Extracts party name from nested table structure
  */
-function getPartyName(cell) {
+function getPartyName(cell, $) {
   const $cell = $(cell);
   const partyCell = $cell.find('table tbody tr td').first();
   if (partyCell.length > 0) {
     const partyText = partyCell.text().trim();
     return partyText.split('iParty')[0].trim();
   }
-  return getCellText(cell);
+  return getCellText(cell, $);
 }
 
 /**
