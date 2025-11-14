@@ -255,11 +255,13 @@ async function fetchResults() {
       
       const $ = await fetchPage(currentUrl);
       if (!$) {
+        console.log(`⚠️  Failed to fetch page: ${currentUrl}`);
         continue;
       }
       
       // Parse constituencies from this page
       const constituencies = parseConstituencies($);
+      console.log(`  ✅ Parsed ${constituencies.length} constituencies from this page`);
       
       // Add unique constituencies (by name or constNo)
       constituencies.forEach(constituency => {
@@ -357,10 +359,12 @@ async function fetchResults() {
       }
     };
   } catch (error) {
-    console.error('Error fetching from ECI:', error.message);
+    console.error('❌ Error fetching from ECI:', error.message);
     console.error('Stack:', error.stack);
     // Return fallback data if scraping fails
-    return getFallbackData();
+    const fallback = getFallbackData();
+    console.log(`⚠️  Using fallback data: ${fallback.states.length} constituencies`);
+    return fallback;
   }
 }
 

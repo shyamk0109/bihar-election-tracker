@@ -41,7 +41,20 @@ app.get('/api/results', async (req, res) => {
 
     // Fetch fresh data
     console.log('🔄 Fetching fresh results from ECI...');
-    const results = await electionScraper.fetchResults();
+    let results;
+    try {
+      results = await electionScraper.fetchResults();
+      console.log(`✅ Fetched results: ${results.states.length} constituencies, ${results.summary.declared} declared, ${results.summary.leading} leading`);
+    } catch (error) {
+      console.error('❌ Error fetching results:', error.message);
+      console.error('Stack:', error.stack);
+      // Use cached data if available
+      if (latestResults.timestamp) {
+        console.log('⚠️  Returning stale cached data due to error');
+        return res.json(latestResults);
+      }
+      throw error;
+    }
     
     // Track changes - always record refresh, even if no changes
     const changeInfo = compareResults(latestResults, results);
