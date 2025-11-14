@@ -81,8 +81,11 @@ function findPaginationLinks($) {
   // Also generate pagination URLs if pattern is found
   if (links.length === 0) {
     // Try generating page URLs based on pattern
+    const baseUrl = ECI_BASE_URL.substring(0, ECI_BASE_URL.lastIndexOf('/'));
     for (let i = 2; i <= 20; i++) {
-      const pageUrl = ECI_BASE_URL.replace(/statewiseS041\.htm$/, `statewiseS04${i}.htm`);
+      // Format: statewiseS042, statewiseS043, ..., statewiseS0410, statewiseS0411, etc.
+      const pageNum = i < 10 ? `0${i}` : `${i}`;
+      const pageUrl = `${baseUrl}/statewiseS04${pageNum}.htm`;
       links.push(pageUrl);
     }
   }
@@ -306,18 +309,25 @@ async function fetchResults() {
       });
       
       // Also try generating pagination URLs based on pattern (statewiseS041, statewiseS042, etc.)
-      if (paginationLinks.length === 0 || allConstituencies.length < 50) {
-        const baseUrl = ECI_BASE_URL.substring(0, ECI_BASE_URL.lastIndexOf('/'));
-        for (let page = 2; page <= 15; page++) {
-          const pageUrl = `${baseUrl}/statewiseS04${page}.htm`;
-          if (!visitedUrls.has(pageUrl) && !urlsToVisit.includes(pageUrl)) {
-            urlsToVisit.push(pageUrl);
-          }
+      // Generate URLs for pages 2-20 to ensure we get all data
+      const baseUrl = ECI_BASE_URL.substring(0, ECI_BASE_URL.lastIndexOf('/'));
+      for (let page = 2; page <= 20; page++) {
+        // Format: statewiseS042, statewiseS043, ..., statewiseS0410, statewiseS0411, etc.
+        const pageNum = page < 10 ? `0${page}` : `${page}`;
+        const pageUrl = `${baseUrl}/statewiseS04${pageNum}.htm`;
+        if (!visitedUrls.has(pageUrl) && !urlsToVisit.includes(pageUrl)) {
+          urlsToVisit.push(pageUrl);
         }
       }
       
-      // Limit to prevent infinite loops
-      if (visitedUrls.size > 20) {
+      // Stop if we've found enough constituencies
+      if (allConstituencies.length >= TOTAL_CONSTITUENCIES) {
+        console.log(`✅ Found all ${TOTAL_CONSTITUENCIES} constituencies, stopping pagination`);
+        break;
+      }
+      
+      // Limit to prevent infinite loops (but allow more pages for 243 constituencies)
+      if (visitedUrls.size > 25) {
         console.log('⚠️  Reached page limit, stopping pagination');
         break;
       }
