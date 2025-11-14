@@ -289,9 +289,46 @@ if (process.env.NODE_ENV === 'production' || fs.existsSync(buildPath)) {
   });
 }
 
+// Schedule automatic data fetching every 5 minutes
+const cron = require('node-cron');
+
+// Fetch data automatically every 5 minutes
+cron.schedule('*/5 * * * *', async () => {
+  console.log('\n⏰ Scheduled data fetch triggered...');
+  try {
+    const results = await electionScraper.fetchResults();
+    const changeInfo = compareResults(latestResults, results);
+    
+    latestResults = results;
+    
+    if (changeInfo.hasChanges) {
+      changeHistory.unshift({
+        timestamp: Date.now(),
+        changes: changeInfo.changes,
+        summary: results.summary,
+        isFirstUpdate: false
+      });
+      
+      if (changeHistory.length > 100) {
+        changeHistory = changeHistory.slice(0, 100);
+      }
+      
+      console.log(`✅ Scheduled update completed: ${results.states.length} constituencies, ${results.summary.declared} declared, ${results.summary.leading} leading`);
+    } else {
+      console.log(`✅ Scheduled update completed (no changes): ${results.states.length} constituencies`);
+    }
+  } catch (error) {
+    console.error('❌ Error in scheduled fetch:', error.message);
+  }
+}, {
+  scheduled: true,
+  timezone: "Asia/Kolkata"
+});
+
 app.listen(PORT, () => {
   console.log(`🚀 Election Tracker Server running on port ${PORT}`);
   console.log(`📊 Fetching initial results...`);
+  console.log(`⏰ Auto-refresh scheduled: Every 5 minutes`);
   
   // Fetch initial results
   electionScraper.fetchResults()
@@ -302,11 +339,13 @@ app.listen(PORT, () => {
       const hasRealData = results.states.some(s => s.leadingParty && s.leadingParty !== 'Unknown' && (s.declared > 0 || s.leading > 0));
       if (!hasRealData) {
         console.log(`⚠️  WARNING: No real data found! All constituencies appear to be empty.`);
+        console.log(`   The scraper will retry automatically every 5 minutes.`);
       }
     })
     .catch(err => {
       console.error('❌ Error loading initial results:', err.message);
       console.error('Stack:', err.stack);
+      console.log(`   The scraper will retry automatically every 5 minutes.`);
     });
 });
 
