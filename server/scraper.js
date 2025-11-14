@@ -81,11 +81,10 @@ function findPaginationLinks($) {
   // Also generate pagination URLs if pattern is found
   if (links.length === 0) {
     // Try generating page URLs based on pattern
+    // Pattern: statewiseS04 + page number (statewiseS041, statewiseS042, statewiseS0410, etc.)
     const baseUrl = ECI_BASE_URL.substring(0, ECI_BASE_URL.lastIndexOf('/'));
     for (let i = 2; i <= 20; i++) {
-      // Format: statewiseS042, statewiseS043, ..., statewiseS0410, statewiseS0411, etc.
-      const pageNum = i < 10 ? `0${i}` : `${i}`;
-      const pageUrl = `${baseUrl}/statewiseS04${pageNum}.htm`;
+      const pageUrl = `${baseUrl}/statewiseS04${i}.htm`;
       links.push(pageUrl);
     }
   }
@@ -309,12 +308,12 @@ async function fetchResults() {
       });
       
       // Also try generating pagination URLs based on pattern (statewiseS041, statewiseS042, etc.)
-      // Generate URLs for pages 2-20 to ensure we get all data
+      // The pattern is: statewiseS04 + page number (1-2 digits)
+      // So: statewiseS041, statewiseS042, ..., statewiseS0410, statewiseS0411, etc.
       const baseUrl = ECI_BASE_URL.substring(0, ECI_BASE_URL.lastIndexOf('/'));
       for (let page = 2; page <= 20; page++) {
         // Format: statewiseS042, statewiseS043, ..., statewiseS0410, statewiseS0411, etc.
-        const pageNum = page < 10 ? `0${page}` : `${page}`;
-        const pageUrl = `${baseUrl}/statewiseS04${pageNum}.htm`;
+        const pageUrl = `${baseUrl}/statewiseS04${page}.htm`;
         if (!visitedUrls.has(pageUrl) && !urlsToVisit.includes(pageUrl)) {
           urlsToVisit.push(pageUrl);
         }
