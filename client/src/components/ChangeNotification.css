@@ -1,0 +1,118 @@
+.change-notification {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  padding: 1.25rem;
+  min-width: 320px;
+  max-width: 400px;
+  z-index: 1000;
+  border-left: 4px solid #667eea;
+  opacity: 0;
+  transform: translateX(400px);
+  transition: all 0.3s ease;
+}
+
+.change-notification.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.notification-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.notification-icon {
+  font-size: 1.5rem;
+}
+
+.notification-title {
+  flex: 1;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #1a1a1a;
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.notification-close:hover {
+  background: #f3f4f6;
+  color: #1a1a1a;
+}
+
+.notification-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.notification-time {
+  font-size: 0.85rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.notification-summary {
+  font-size: 0.95rem;
+  color: #1a1a1a;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.notification-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.stat-tag {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.stat-tag.status {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.stat-tag.candidate {
+  background: #fce7f3;
+  color: #9f1239;
+}
+
+.stat-tag.party {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+@media (max-width: 768px) {
+  .change-notification {
+    right: 10px;
+    left: 10px;
+    min-width: unset;
+    max-width: unset;
+  }
+}
+

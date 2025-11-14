@@ -1,0 +1,16 @@
+.constituencies-page {
+  width: 100%;
+}
+
+.constituencies-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+@media (max-width: 768px) {
+  .constituencies-container {
+    padding: 1rem;
+  }
+}
+

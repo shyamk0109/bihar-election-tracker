@@ -1,0 +1,16 @@
+.party-analysis-page {
+  width: 100%;
+}
+
+.party-analysis-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+@media (max-width: 768px) {
+  .party-analysis-container {
+    padding: 1rem;
+  }
+}
+

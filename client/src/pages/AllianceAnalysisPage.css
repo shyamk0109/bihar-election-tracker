@@ -1,0 +1,16 @@
+.alliance-analysis-page {
+  width: 100%;
+}
+
+.alliance-analysis-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+@media (max-width: 768px) {
+  .alliance-analysis-container {
+    padding: 1rem;
+  }
+}
+

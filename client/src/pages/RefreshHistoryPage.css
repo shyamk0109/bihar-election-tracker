@@ -1,0 +1,216 @@
+.refresh-history-page {
+  width: 100%;
+}
+
+.refresh-history-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.history-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 2rem;
+}
+
+.history-loading,
+.no-history {
+  text-align: center;
+  padding: 3rem;
+  color: #6b7280;
+  background: #f9fafb;
+  border-radius: 12px;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.history-item {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-left: 4px solid #e5e7eb;
+}
+
+.history-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.history-item.has-changes {
+  border-left-color: #667eea;
+}
+
+.history-item.no-changes {
+  border-left-color: #9ca3af;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.history-time {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.time-ago {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.time-exact {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.history-summary {
+  flex: 1;
+}
+
+.summary-badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.summary-badge.initial {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.summary-badge.changes {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.summary-badge.no-changes {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.history-toggle {
+  font-size: 1.25rem;
+  color: #6b7280;
+}
+
+.history-details {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.change-stats {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.stat-badge {
+  padding: 0.4rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.stat-badge.status {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.stat-badge.candidate {
+  background: #fce7f3;
+  color: #9f1239;
+}
+
+.stat-badge.party {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.stat-badge.new {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.changes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.change-item {
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  border-left: 3px solid #e5e7eb;
+}
+
+.change-item.change-status_change {
+  border-left-color: #3b82f6;
+}
+
+.change-item.change-candidate_change {
+  border-left-color: #ec4899;
+}
+
+.change-item.change-party_change {
+  border-left-color: #f59e0b;
+}
+
+.change-item.change-new {
+  border-left-color: #10b981;
+}
+
+.change-header {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: #1a1a1a;
+}
+
+.change-details {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.change-details strong {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.no-changes-message {
+  padding: 1.5rem;
+  text-align: center;
+  color: #6b7280;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+  .refresh-history-container {
+    padding: 1rem;
+  }
+  
+  .history-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
