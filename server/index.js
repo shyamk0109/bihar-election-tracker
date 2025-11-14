@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const electionScraper = require('./scraper');
 const { aggregateByAlliance } = require('./alliances');
 const { compareResults } = require('./changeTracker');
@@ -183,10 +184,11 @@ app.get('/api/health', (req, res) => {
 });
 
 // Serve static files in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/build')));
+const buildPath = path.join(__dirname, '../client/build');
+if (process.env.NODE_ENV === 'production' || fs.existsSync(buildPath)) {
+  app.use(express.static(buildPath));
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+    res.sendFile(path.join(buildPath, 'index.html'));
   });
 }
 
