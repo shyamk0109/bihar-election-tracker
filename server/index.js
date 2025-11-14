@@ -202,6 +202,28 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Test endpoint to manually trigger scraper and see what happens
+app.get('/api/test-scraper', async (req, res) => {
+  try {
+    console.log('🧪 Test scraper endpoint called');
+    const results = await electionScraper.fetchResults();
+    res.json({
+      success: true,
+      constituenciesFound: results.states.length,
+      declared: results.summary.declared,
+      leading: results.summary.leading,
+      sample: results.states.slice(0, 3),
+      timestamp: results.timestamp
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      stack: error.stack
+    });
+  }
+});
+
 // Serve static files in production
 const buildPath = path.join(__dirname, '../client/build');
 if (process.env.NODE_ENV === 'production' || fs.existsSync(buildPath)) {
