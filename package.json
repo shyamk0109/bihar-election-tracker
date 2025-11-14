@@ -13,7 +13,12 @@
     "postinstall": "cd client && npm install",
     "pusher": "node local-data-pusher.js"
   },
-  "keywords": ["election", "tracking", "dashboard", "analytics"],
+  "keywords": [
+    "election",
+    "tracking",
+    "dashboard",
+    "analytics"
+  ],
   "author": "",
   "license": "MIT",
   "engines": {
@@ -21,16 +26,16 @@
     "npm": ">=9.0.0"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "cors": "^2.8.5",
     "axios": "^1.6.0",
     "cheerio": "^1.0.0-rc.12",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
     "node-cron": "^3.0.3",
-    "dotenv": "^16.3.1"
+    "puppeteer": "^21.11.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1",
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.1"
   }
 }
-

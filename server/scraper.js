@@ -4,47 +4,114 @@ const cheerio = require('cheerio');
 const ECI_BASE_URL = 'https://results.eci.gov.in/ResultAcGenNov2025/statewiseS041.htm';
 const TOTAL_CONSTITUENCIES = 243; // Bihar has 243 constituencies
 
+// Lazy load puppeteer only when needed
+let puppeteer = null;
+async function getPuppeteer() {
+  if (!puppeteer) {
+    try {
+      puppeteer = require('puppeteer');
+    } catch (e) {
+      console.log('  ⚠️  Puppeteer not available, using axios only');
+      return null;
+    }
+  }
+  return puppeteer;
+}
+
 /**
- * Fetches a single page of results
+ * Fetches a single page using Puppeteer (bypasses 403 blocks)
  */
-async function fetchPage(url) {
+async function fetchPageWithPuppeteer(url) {
   try {
-    console.log(`  🌐 Attempting to fetch: ${url}`);
-    const response = await axios.get(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
-        'Sec-Fetch-Dest': 'document',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'none',
-        'Cache-Control': 'max-age=0',
-        'Referer': 'https://results.eci.gov.in/'
-      },
-      timeout: 45000,
-      maxRedirects: 5,
-      validateStatus: function (status) {
-        return status >= 200 && status < 400;
-      }
+    const puppeteerModule = await getPuppeteer();
+    if (!puppeteerModule) return null;
+    
+    console.log(`  🌐 Fetching with browser: ${url}`);
+    const browser = await puppeteerModule.launch({ 
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
     });
-    console.log(`  ✅ Successfully fetched page, status: ${response.status}, content length: ${response.data.length}`);
-    const $ = cheerio.load(response.data);
-    const tableCount = $('table').length;
-    console.log(`  📊 Found ${tableCount} tables on page`);
+    const page = await browser.newPage();
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+    const html = await page.content();
+    await browser.close();
+    const $ = cheerio.load(html);
+    console.log(`  ✅ Successfully fetched with browser`);
     return $;
   } catch (error) {
-    console.error(`  ❌ Error fetching page ${url}:`, error.message);
-    if (error.response) {
-      console.error(`  Status: ${error.response.status}`);
-    }
-    if (error.code) {
-      console.error(`  Error code: ${error.code}`);
-    }
+    console.error(`  ❌ Puppeteer error: ${error.message}`);
     return null;
   }
+}
+
+/**
+ * Fetches a single page of results with retry and fallback
+ */
+async function fetchPage(url, retries = 2) {
+  // Try axios first
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      if (attempt > 0) {
+        console.log(`  ⏳ Retry attempt ${attempt + 1}/${retries}...`);
+        await new Promise(resolve => setTimeout(resolve, 2000 * (attempt + 1))); // Exponential backoff
+      }
+      
+      console.log(`  🌐 Attempting to fetch: ${url}`);
+      const response = await axios.get(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+          'Accept-Language': 'en-US,en;q=0.9',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Connection': 'keep-alive',
+          'Upgrade-Insecure-Requests': '1',
+          'Sec-Fetch-Dest': 'document',
+          'Sec-Fetch-Mode': 'navigate',
+          'Sec-Fetch-Site': 'none',
+          'Cache-Control': 'max-age=0',
+          'Referer': 'https://results.eci.gov.in/'
+        },
+        timeout: 45000,
+        maxRedirects: 5,
+        validateStatus: function (status) {
+          return status >= 200 && status < 500; // Accept 4xx to handle manually
+        }
+      });
+      
+      if (response.status === 200) {
+        console.log(`  ✅ Successfully fetched page, status: ${response.status}, content length: ${response.data.length}`);
+        const $ = cheerio.load(response.data);
+        const tableCount = $('table').length;
+        console.log(`  📊 Found ${tableCount} tables on page`);
+        return $;
+      } else if (response.status === 403) {
+        console.log(`  ⚠️  Got 403 Forbidden, trying Puppeteer fallback...`);
+        // Fallback to Puppeteer
+        const $ = await fetchPageWithPuppeteer(url);
+        if ($) return $;
+        // If Puppeteer also fails, continue to next retry
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 403) {
+        console.log(`  ⚠️  Got 403 Forbidden, trying Puppeteer fallback...`);
+        const $ = await fetchPageWithPuppeteer(url);
+        if ($) return $;
+      } else {
+        console.error(`  ❌ Error fetching page ${url}:`, error.message);
+        if (error.response) {
+          console.error(`  Status: ${error.response.status}`);
+        }
+        if (error.code) {
+          console.error(`  Error code: ${error.code}`);
+        }
+      }
+    }
+  }
+  
+  // Last resort: try Puppeteer
+  console.log(`  🔄 Trying Puppeteer as last resort...`);
+  return await fetchPageWithPuppeteer(url);
 }
 
 /**
@@ -272,15 +339,14 @@ async function fetchResults() {
       visitedUrls.add(currentUrl);
       console.log(`📄 Fetching page: ${currentUrl} (Found ${allConstituencies.length} constituencies so far)`);
       
-      let $ = await fetchPage(currentUrl);
-      // Retry once if failed
-      if (!$) {
-        console.log(`⚠️  First attempt failed, retrying: ${currentUrl}`);
-        await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds
-        $ = await fetchPage(currentUrl);
+      // Add delay between pages to avoid rate limiting
+      if (visitedUrls.size > 1) {
+        await new Promise(resolve => setTimeout(resolve, 2000)); // 2 second delay between pages
       }
+      
+      let $ = await fetchPage(currentUrl);
       if (!$) {
-        console.log(`❌ Failed to fetch page after retry: ${currentUrl}`);
+        console.log(`❌ Failed to fetch page: ${currentUrl}`);
         continue;
       }
       
