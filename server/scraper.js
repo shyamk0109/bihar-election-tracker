@@ -24,7 +24,7 @@ async function fetchPage(url) {
         'Cache-Control': 'max-age=0',
         'Referer': 'https://results.eci.gov.in/'
       },
-      timeout: 30000,
+      timeout: 45000,
       maxRedirects: 5,
       validateStatus: function (status) {
         return status >= 200 && status < 400;
@@ -270,9 +270,15 @@ async function fetchResults() {
       visitedUrls.add(currentUrl);
       console.log(`📄 Fetching page: ${currentUrl} (Found ${allConstituencies.length} constituencies so far)`);
       
-      const $ = await fetchPage(currentUrl);
+      let $ = await fetchPage(currentUrl);
+      // Retry once if failed
       if (!$) {
-        console.log(`⚠️  Failed to fetch page: ${currentUrl}`);
+        console.log(`⚠️  First attempt failed, retrying: ${currentUrl}`);
+        await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds
+        $ = await fetchPage(currentUrl);
+      }
+      if (!$) {
+        console.log(`❌ Failed to fetch page after retry: ${currentUrl}`);
         continue;
       }
       
