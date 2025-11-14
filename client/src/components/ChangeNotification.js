@@ -15,6 +15,17 @@ const ChangeNotification = ({ lastUpdate, onDismiss }) => {
     if (onDismiss) onDismiss();
   }, [onDismiss]);
 
+  const fetchLatestChange = useCallback(async () => {
+    try {
+      const response = await axios.get(`${API_BASE}/api/refresh-history`);
+      if (response.data.history && response.data.history.length > 0) {
+        setLatestChange(response.data.history[0]);
+      }
+    } catch (error) {
+      console.error('Error fetching latest change:', error);
+    }
+  }, []);
+
   useEffect(() => {
     if (lastUpdate) {
       fetchLatestChange();
@@ -26,18 +37,7 @@ const ChangeNotification = ({ lastUpdate, onDismiss }) => {
       }, 10000);
       return () => clearTimeout(timer);
     }
-  }, [lastUpdate, handleDismiss]);
-
-  const fetchLatestChange = async () => {
-    try {
-      const response = await axios.get(`${API_BASE}/api/refresh-history`);
-      if (response.data.history && response.data.history.length > 0) {
-        setLatestChange(response.data.history[0]);
-      }
-    } catch (error) {
-      console.error('Error fetching latest change:', error);
-    }
-  };
+  }, [lastUpdate, handleDismiss, fetchLatestChange]);
 
   if (!show || !latestChange) {
     return null;
