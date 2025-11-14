@@ -212,8 +212,17 @@ app.get('/api/test-scraper', async (req, res) => {
       constituenciesFound: results.states.length,
       declared: results.summary.declared,
       leading: results.summary.leading,
-      sample: results.states.slice(0, 3),
-      timestamp: results.timestamp
+      pending: results.summary.pending,
+      sample: results.states.slice(0, 5).map(s => ({
+        name: s.name,
+        constNo: s.constNo,
+        status: s.status,
+        leadingParty: s.leadingParty,
+        declared: s.declared,
+        leading: s.leading
+      })),
+      timestamp: results.timestamp,
+      hasRealData: results.states.some(s => s.leadingParty && s.leadingParty !== 'Unknown' && (s.declared > 0 || s.leading > 0))
     });
   } catch (error) {
     res.status(500).json({

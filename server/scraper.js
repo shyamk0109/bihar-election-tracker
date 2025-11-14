@@ -9,6 +9,7 @@ const TOTAL_CONSTITUENCIES = 243; // Bihar has 243 constituencies
  */
 async function fetchPage(url) {
   try {
+    console.log(`  🌐 Attempting to fetch: ${url}`);
     const response = await axios.get(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -23,17 +24,24 @@ async function fetchPage(url) {
         'Cache-Control': 'max-age=0',
         'Referer': 'https://results.eci.gov.in/'
       },
-      timeout: 20000,
+      timeout: 30000,
       maxRedirects: 5,
       validateStatus: function (status) {
         return status >= 200 && status < 400;
       }
     });
-    return cheerio.load(response.data);
+    console.log(`  ✅ Successfully fetched page, status: ${response.status}, content length: ${response.data.length}`);
+    const $ = cheerio.load(response.data);
+    const tableCount = $('table').length;
+    console.log(`  📊 Found ${tableCount} tables on page`);
+    return $;
   } catch (error) {
-    console.error(`Error fetching page ${url}:`, error.message);
+    console.error(`  ❌ Error fetching page ${url}:`, error.message);
     if (error.response) {
-      console.error(`Status: ${error.response.status}, Headers:`, error.response.headers);
+      console.error(`  Status: ${error.response.status}`);
+    }
+    if (error.code) {
+      console.error(`  Error code: ${error.code}`);
     }
     return null;
   }
