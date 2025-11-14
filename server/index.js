@@ -193,7 +193,13 @@ app.get('/api/refresh-history', (req, res) => {
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    hasData: latestResults.timestamp !== null,
+    dataAge: latestResults.timestamp ? Date.now() - latestResults.timestamp : null,
+    constituenciesCount: latestResults.states ? latestResults.states.length : 0
+  });
 });
 
 // Serve static files in production
