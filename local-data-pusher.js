@@ -94,8 +94,8 @@ function parseConstituencies($) {
     
     if (cells.length < 9) return;
     
-    const constituencyName = getCellText(cells[0]);
-    const constNo = getCellText(cells[1]);
+    const constituencyName = getCellText(cells[0], $);
+    const constNo = getCellText(cells[1], $);
     
     // Skip header rows
     if (!constituencyName || 
@@ -107,13 +107,13 @@ function parseConstituencies($) {
       return;
     }
     
-    const leadingCandidate = getCellText(cells[2]);
-    const leadingParty = getPartyName(cells[3]);
-    const trailingCandidate = getCellText(cells[4]);
-    const trailingParty = getPartyName(cells[5]);
-    const marginText = getCellText(cells[6]);
-    const round = getCellText(cells[7]);
-    const statusText = getCellText(cells[8]);
+    const leadingCandidate = getCellText(cells[2], $);
+    const leadingParty = getPartyName(cells[3], $);
+    const trailingCandidate = getCellText(cells[4], $);
+    const trailingParty = getPartyName(cells[5], $);
+    const marginText = getCellText(cells[6], $);
+    const round = getCellText(cells[7], $);
+    const statusText = getCellText(cells[8], $);
     
     const margin = parseInt(marginText.replace(/,/g, '')) || 0;
     
