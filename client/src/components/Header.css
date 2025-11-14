@@ -59,6 +59,7 @@
   margin-left: auto;
   margin-right: auto;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 .nav-link {
@@ -70,6 +71,8 @@
   border-radius: 8px;
   transition: all 0.2s ease;
   border: 2px solid transparent;
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .nav-link:hover {
@@ -209,14 +212,17 @@
     gap: 0.5rem;
     margin-top: 0.75rem;
     padding-top: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: flex-start;
   }
 
   .nav-link {
-    padding: 0.6rem 1rem;
-    font-size: 0.85rem;
-    flex: 1;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.8rem;
+    flex: 0 1 auto;
     text-align: center;
-    min-width: 0;
+    min-width: fit-content;
+    white-space: nowrap;
   }
 }
 
@@ -227,19 +233,45 @@
 
   .header-title {
     font-size: 1.25rem;
+    line-height: 1.3;
   }
 
   .header-subtitle {
     font-size: 0.75rem;
+    line-height: 1.4;
+  }
+
+  .header-nav {
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
   }
 
   .nav-link {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.8rem;
+    padding: 0.5rem 0.6rem;
+    font-size: 0.75rem;
+    flex: 0 1 auto;
+    min-width: fit-content;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
   }
 
   .refresh-button {
     padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+
+  .update-info {
+    font-size: 0.75rem;
+  }
+
+  .update-label {
+    font-size: 0.7rem;
+  }
+
+  .update-time {
     font-size: 0.8rem;
   }
 }
