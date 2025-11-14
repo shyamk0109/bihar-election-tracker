@@ -111,8 +111,12 @@ function parseConstituencies($) {
   }
   
   if (mainTable.length === 0) {
+    console.log('⚠️  No table found on page');
     return constituencies;
   }
+  
+  const rowCount = mainTable.find('tr').length;
+  console.log(`  📊 Found table with ${rowCount} rows`);
   
   // Helper function to extract text from cell, removing nested tables
   const getCellText = (cell) => {
@@ -139,14 +143,18 @@ function parseConstituencies($) {
   };
   
   // Parse rows from the main table
+  let rowsProcessed = 0;
+  let rowsSkipped = 0;
   mainTable.find('tr').each((index, element) => {
     const $row = $(element);
     // Only get direct child cells (not from nested tables)
     const cells = $row.children('td, th');
     
     if (cells.length < 9) {
+      rowsSkipped++;
       return;
     }
+    rowsProcessed++;
     
     // Extract constituency name (first column)
     const constituencyName = getCellText(cells[0]);
@@ -228,6 +236,7 @@ function parseConstituencies($) {
     }
   });
   
+  console.log(`  📝 Processed ${rowsProcessed} rows with 9+ cells, skipped ${rowsSkipped} rows, found ${constituencies.length} valid constituencies`);
   return constituencies;
 }
 
