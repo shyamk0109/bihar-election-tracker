@@ -251,7 +251,15 @@ app.listen(PORT, () => {
     .then(results => {
       latestResults = results;
       console.log(`✅ Initial results loaded: ${results.states.length} states`);
+      console.log(`   Declared: ${results.summary.declared}, Leading: ${results.summary.leading}, Pending: ${results.summary.pending}`);
+      const hasRealData = results.states.some(s => s.leadingParty && s.leadingParty !== 'Unknown' && (s.declared > 0 || s.leading > 0));
+      if (!hasRealData) {
+        console.log(`⚠️  WARNING: No real data found! All constituencies appear to be empty.`);
+      }
     })
-    .catch(err => console.error('❌ Error loading initial results:', err));
+    .catch(err => {
+      console.error('❌ Error loading initial results:', err.message);
+      console.error('Stack:', err.stack);
+    });
 });
 
