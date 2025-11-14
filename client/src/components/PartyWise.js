@@ -51,7 +51,7 @@ const PartyWise = () => {
   };
 
   // Get parties - must be before early returns
-  const parties = partyData?.parties || [];
+  const parties = useMemo(() => partyData?.parties || [], [partyData]);
 
   // Filter parties based on filters - must be before early returns
   const filteredParties = useMemo(() => {

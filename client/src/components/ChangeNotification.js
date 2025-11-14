@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { formatDistanceToNow } from 'date-fns';
 import './ChangeNotification.css';
@@ -11,6 +11,10 @@ const ChangeNotification = ({ lastUpdate, onDismiss }) => {
   const [latestChange, setLatestChange] = useState(null);
   const [show, setShow] = useState(false);
 
+  const handleDismiss = useCallback(() => {
+    if (onDismiss) onDismiss();
+  }, [onDismiss]);
+
   useEffect(() => {
     if (lastUpdate) {
       fetchLatestChange();
@@ -18,11 +22,11 @@ const ChangeNotification = ({ lastUpdate, onDismiss }) => {
       // Auto-hide after 10 seconds
       const timer = setTimeout(() => {
         setShow(false);
-        if (onDismiss) onDismiss();
+        handleDismiss();
       }, 10000);
       return () => clearTimeout(timer);
     }
-  }, [lastUpdate]);
+  }, [lastUpdate, handleDismiss]);
 
   const fetchLatestChange = async () => {
     try {
@@ -48,7 +52,7 @@ const ChangeNotification = ({ lastUpdate, onDismiss }) => {
       <div className="notification-header">
         <span className="notification-icon">🔄</span>
         <span className="notification-title">Data Updated</span>
-        <button className="notification-close" onClick={() => { setShow(false); if (onDismiss) onDismiss(); }}>
+        <button className="notification-close" onClick={() => { setShow(false); handleDismiss(); }}>
           ✕
         </button>
       </div>

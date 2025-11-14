@@ -5,8 +5,6 @@ const AllianceSummary = ({ allianceData }) => {
   const alliances = allianceData.alliances || [];
   const majorityThreshold = allianceData.majorityThreshold || 122;
 
-  const totalSeats = alliances.reduce((sum, a) => sum + a.declared + a.leading, 0);
-
   return (
     <div className="alliance-summary-container">
       <h2 className="alliance-summary-title">🤝 Alliance Summary</h2>
