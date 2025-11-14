@@ -88,10 +88,20 @@ function parseConstituencies($) {
   }
   
   // Parse rows
-  mainTable.find('tr').each((index, element) => {
+  mainTable.find('> tbody > tr, > tr').each((index, element) => {
     const $row = $(element);
-    const cells = $row.children('td, th');
+    // Get only direct child cells (not from nested tables)
+    // Use direct child selector to avoid nested table cells
+    const cells = [];
+    $row.children().each(function() {
+      const $cell = $(this);
+      // Only include if it's a direct child and not inside a nested table
+      if (($cell.is('td') || $cell.is('th')) && $cell.closest('table').is(mainTable)) {
+        cells.push(this);
+      }
+    });
     
+    // Need at least 9 cells for a valid data row
     if (cells.length < 9) return;
     
     const constituencyName = getCellText(cells[0], $);
